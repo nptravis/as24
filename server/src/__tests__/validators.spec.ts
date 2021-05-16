@@ -3,52 +3,49 @@ import { validateCSV } from './../utils/validateCSVs';
 import { validListingsHeaders, validListingsRow } from "../constants/validCSVData"
 
 describe('~~~~~~CSV Validation~~~~~~~~', () => {
-    const correctListings = [
-        validListingsHeaders, 
-        [1000,"Audi",49717,6500,"private"],
-        [1001,"Mazda",22031,7000,"private"],
-        [1009,"Audi",40070,2500,"dealer"],
-        [1010,"Fiat",41201,1500,"other"]
+    const correctListings: ListingsRow[] = [
+        {id: '1000', make: "Audi", mileage: '49717', price: '6500', seller_type: 'private' },
+        {id: '1000', make: "Mazda", mileage: '22031', price: '7000', seller_type: 'private' },
+        {id: '1000', make: "Audi", mileage: '40700', price: '2500', seller_type: 'dealer' },
+        {id: '1000', make: "Fiat", mileage: '49717', price: '6500', seller_type: 'other' },
     ]
     const incorrectListings = [
-        ['foo', 'bar', 'fuzz', 'buzz', 'seller_type'],
-        ['1000',"Audi",49717,6500,"private"],
-        [1001,"Mazda",22031,7000,"private"],
+        {foo: '1000', make: "Audi", seller_type: 'private' },
+        {id: 1000, make: "Mazda", mileage: '22031', price: '7000', seller_type: 'private' },
+        {id: 1000, make: "Audi", mileage: '40700', price: '2500', seller_type: 'dealer' },
     ]
 
     const correctContacts = [
-        validContactsHeaders,
-        [1244,1592498493000],
-        [1085,1582474057000],
-        [ 1288,1579365755000],
-        [ 1231,1585159440000],
+        {"listing_id":"1244","contact_date":"1592498493000"},
+        {"listing_id":"1085","contact_date":"1582474057000"},
+        {"listing_id":"1288","contact_date":"1579365755000"},
+        {"listing_id":"1231","contact_date":"1585159440000"},
     ]
 
     const incorrectContacts = [
-        ['listing_id', 'contact_date'],
-        ['1244',1592498493000],
-        [1085,1582474057000],
-        [1288,1579365755000],
-        [1231,1585159440000],
+        {"listing_id":1244,"contact_date":"1592498493000"},
+        {"listing_id":"1085","contact_date":"1582474057000"},
+        {"listing_id":"1288","contact_date":"1579365755000"},
+        {"listing_id":"1231","contact_date":"1585159440000"},
     ]
 
     test('validate Listings CSV', () => {
-        const noErrors = validateCSV(correctListings, validListingsHeaders, validListingsRow)
-        const errors = validateCSV(incorrectListings, validListingsHeaders, validListingsRow)
-        expect(noErrors).toBeNull();
-        expect(errors).not.toBeNull();
-        if(errors){
-            expect(errors[0]).toBe('Error: foo is not a valid header, it should be: id')
+        const noError = validateCSV(correctListings, validListingsHeaders, validListingsRow)
+        const error = validateCSV(incorrectListings, validListingsHeaders, validListingsRow)
+        expect(noError).toBeNull();
+        expect(error).not.toBeNull();
+        if(error){
+            expect(error.message).toBe('There is not enough headers.')
         }
     })
 
     test('validate Contacts CSV', () => {
-        const noErrors = validateCSV(correctContacts, validContactsHeaders, validContactsRow)
-        const errors = validateCSV(incorrectContacts, validContactsHeaders, validContactsRow)
-        expect(noErrors).toBeNull();
-        expect(errors).not.toBeNull();
-        if(errors){
-            expect(errors[0]).toBe("Error: string is not a valid type for row number: 1, it should be: number"
+        const noError = validateCSV(correctContacts, validContactsHeaders, validContactsRow)
+        const error = validateCSV(incorrectContacts, validContactsHeaders, validContactsRow)
+        expect(noError).toBeNull();
+        expect(error).not.toBeNull();
+        if(error){
+            expect(error.message).toBe("number is not a valid type for row number: 1, it should be: string"
             )
         }
     })

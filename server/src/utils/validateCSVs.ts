@@ -1,48 +1,56 @@
-export const validateCSV = (rows: any[], validHeaders: string[], validRow: (string|number)[]): string[] | null => {
-    const errors: string[] = [];
-    for(let i = 0; i < rows.length; i++){
-        if(i === 0){
-            // validate headers
-            const error = validateHeaders(rows[i], validHeaders)
+export const validateCSV = (rows: any[], validHeaders: string[], validRow: any): Error | null => {
+    try {
+        // validate headers
+        if(typeof rows[0] !== 'object'){
+            throw new Error('First item is not an object');
+        }
+        const headers = Object.keys(rows[0])
+        const error = validateHeaders(headers, validHeaders);
+        if(error) return error;
+        
+        // validate rows
+        for(let i = 0; i < rows.length; i++){
+            const error = validateRow(rows[i], validRow, i+1);
             if(error){
-                errors.push(error);
-            }
-        } else {
-            const error = validateRow(rows[i], validRow, i)
-            if(error){
-                errors.push(error);
+                return error;
             }
         }
+        return null;
+    } catch (err) {
+        return err
     }
-   return errors.length > 0 ? errors : null;
 }
 
-const validateHeaders = (headers: string[], validHeaders:  string[]): string | null => {
+const validateHeaders = (headers: string[], validHeaders:  string[]): Error | null => {
     try {
         if(headers.length !== validHeaders.length){
             throw new Error('There is not enough headers.')
         }
-    
-        validHeaders.forEach((validHeader, index) => {
-            if (headers[index] !== validHeader){
-                throw new Error(`${headers[index]} is not a valid header, it should be: ${validHeader}`)
+        
+        validHeaders.forEach((header, index) => {
+            if (!headers.includes(header)){
+                throw new Error(`${header} is a required header.`)
             }
         })
+        return null
     } catch(err){
-        return err.toString();
+        return err;
     }
-    return null
 }
 
-const validateRow = (row: (string|number)[], validRow: (string|number)[], rowNumber: number): string | null => {
+const validateRow = (row: Record<string, unknown>, validRow: any, rowNumber: number): Error | null => {
     try {
-        validRow.forEach((validValue, index) => {
-            if (typeof validValue !== typeof row[index]){
-                throw new Error(`${typeof row[index]} is not a valid type for row number: ${rowNumber}, it should be: ${typeof validValue}`);
+        if (typeof row !== 'object'){
+            throw new Error(`row number ${rowNumber} is not a valid object.`)
+        }
+        Object.keys(row).forEach(key => {
+            if (typeof row[key] !== typeof validRow[key]){
+                throw new Error(`${typeof row[key]} is not a valid type for row number: ${rowNumber}, it should be: ${typeof validRow[key]}`);
             }
         })
+
+        return null
     } catch (err){
-        return err.toString();
+        return err;
     }
-    return null
 }

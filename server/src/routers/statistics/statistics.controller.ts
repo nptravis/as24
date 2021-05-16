@@ -5,13 +5,18 @@ import fs from 'fs';
 
 const averagePricePerSellerType = async (req: Request, res: Response): Promise<void> => {
 	try {
+    const path = 'data/averagePricePerSellerType.json';
+    if (!fs.existsSync(path)) {
+      res.status(statusCodes.notFound).send({error: 'data is not yet present.'});
 
-        fs.readFile('data/averagePricePerSellerType.json', 'utf8', (err, data) => {
-            if (err) {
-              throw err;
-            }
-            res.status(statusCodes.success).send({content: JSON.parse(data)});
-          });
+    } else {
+      fs.readFile(path, 'utf8', (err, data) => {
+        if (err) {
+          throw err;
+        }
+        res.status(statusCodes.success).send({content: JSON.parse(data)});
+      });
+    }
 		
 	} catch (err){
 		res.status(statusCodes.serverError).send({error: err.toString()});
@@ -20,13 +25,18 @@ const averagePricePerSellerType = async (req: Request, res: Response): Promise<v
 
 const distributionByMake = async (req: Request, res: Response): Promise<void> => {
 	try {
+    const path = 'data/distributionByMake.json';
+    if (!fs.existsSync(path)) {
+      res.status(statusCodes.notFound).send({error: 'data is not yet present.'});
 
-        fs.readFile('data/distributionByMake.json', 'utf8', (err, data) => {
-            if (err) {
-              throw err;
-            }
-            res.status(statusCodes.success).send({content: JSON.parse(data)});
-          });
+    } else {
+      fs.readFile(path, 'utf8', (err, data) => {
+        if (err) {
+          throw err;
+        }
+        res.status(statusCodes.success).send({content: JSON.parse(data)});
+      });
+    }
 		
 	} catch (err){
 		res.status(statusCodes.serverError).send({error: err.toString()});
@@ -35,5 +45,5 @@ const distributionByMake = async (req: Request, res: Response): Promise<void> =>
 
 export const statisticsController = {
 	averagePricePerSellerType,
-    distributionByMake
+  distributionByMake
 };

@@ -8,6 +8,9 @@ import { config } from './config';
 import { Server } from 'http';
 import { filesRouter } from './routers/files/files.router';
 import { statisticsRouter } from './routers/statistics/statistics.router';
+import fs from 'fs';
+import { initalizeDirectories } from './utils/initializeDirectories';
+
 export const app = express();
 const pathToFrontendAssets = path.join(__dirname, '/../../client/build');
 
@@ -24,7 +27,6 @@ app.use(express.static(pathToFrontendAssets))
 app.get('/', function(req, res) {
 	const pathToIndex = path.join(__dirname, pathToFrontendAssets, 'index.html')
 	res.sendFile(pathToIndex)
-	// res.send({message: 'ok'})
 })
 
 // API
@@ -51,6 +53,7 @@ app.use('*', function (req, res) {
 let server: Server;
 export const start = async (): Promise<void> => {
 	try {
+		initalizeDirectories();
 		server = app.listen(config.port, () => {
 			console.log(`Server listening at http://localhost:${config.port}`);
 		});
