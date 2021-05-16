@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { filesController } from './files.controller';
 import multer from 'multer';
-import fs from 'fs';
 
 const router = Router();
 const upload = multer({dest: 'uploads/', preservePath: true});
