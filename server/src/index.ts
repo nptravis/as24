@@ -17,7 +17,11 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 app.get('/ping', function (req, res) {
-	res.send('pong-1');
+	try {
+		res.status(statusCodes.success).send({content: 'pong'});
+	} catch (err){
+		res.status(statusCodes.serverError).send({error: err.toString()});
+	}
 });
 
 // always keep this as the last route, to catch all undefined routes
@@ -42,9 +46,7 @@ export const start = async (): Promise<void> => {
 
 export const stop = (): void => {
 	try {
-		server.close(() => {
-			console.log('~~~ Server gracefully terminated ~~~');
-		});
+		server.close();
 	} catch (err) {
 		console.error(err);
 	}
