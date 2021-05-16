@@ -1,5 +1,3 @@
-import { validContactsHeaders, validContactsRow } from './constants/validCSVData';
-import { validateCSV } from './utils/validateCSVs';
 import { statusCodes } from './constants/statusCodes';
 import express from 'express';
 import cors from 'cors';
@@ -7,12 +5,8 @@ import { json, urlencoded } from 'body-parser';
 import morgan from 'morgan';
 import { config } from './config';
 import { Server } from 'http';
-import multer from 'multer';
-import * as csv  from 'fast-csv';
-import fs from 'fs';
-import { fileUploaderRouter } from './routers/fileUploader/fileUploader.router';
-
-var upload = multer({dest: 'uploads/', preservePath: true});
+import { filesRouter } from './routers/files/files.router';
+import { statisticsRouter } from './routers/statistics/statistics.router';
 export const app = express();
 
 // Middleware
@@ -23,13 +17,11 @@ app.use(morgan('dev'));
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-const supportedCSVs: multer.Field[] = [
-	{name: 'contacts', maxCount: 1},
-	{name: 'listings', maxCount: 1}
-]
+// API
+app.use('/statistics', statisticsRouter)
+app.use('/files', filesRouter)
 
-app.post('/upload-csv', upload.fields(supportedCSVs), fileUploaderRouter)
-
+// Health Check
 app.get('/ping', function (req, res) {
 	try {
 		res.status(statusCodes.success).send({content: 'pong'});
@@ -58,6 +50,7 @@ export const start = async (): Promise<void> => {
 	}
 };
 
+// Stop Server
 export const stop = (): void => {
 	try {
 		server.close();

@@ -1,4 +1,4 @@
-export const validateCSV = (rows: (string|number)[][], validHeaders: string[], validRow: (string|number)[]): string[] | null => {
+export const validateCSV = (rows: any[], validHeaders: string[], validRow: (string|number)[]): string[] | null => {
     const errors: string[] = [];
     for(let i = 0; i < rows.length; i++){
         if(i === 0){
@@ -17,7 +17,7 @@ export const validateCSV = (rows: (string|number)[][], validHeaders: string[], v
    return errors.length > 0 ? errors : null;
 }
 
-const validateHeaders = (headers: (string|number)[], validHeaders:  (string|number)[]): string | null => {
+const validateHeaders = (headers: string[], validHeaders:  string[]): string | null => {
     try {
         if(headers.length !== validHeaders.length){
             throw new Error('There is not enough headers.')
