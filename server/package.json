@@ -9,7 +9,7 @@
     "compile": "tsc -b -w",
     "build": "tsc -b",
     "watch": "nodemon build/start.js",
-    "start": "yarn build && node build/start.js"
+    "start": "cd ../client && yarn && yarn build && cd ../server && yarn && yarn build && node build/start.js"
   },
   "repository": {
     "type": "git",
