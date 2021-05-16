@@ -22,7 +22,11 @@ const uploadCSVs = async (req: Request, res: Response): Promise<void> => {
 		csv.parseFile(contactsFile.path, {headers: true}).on('data', (data) => {
 			contactsRows.push(data)
 		}).on('end', () => {
-			// const errors = validateCSV(contactsRows, validContactsHeaders, validContactsRow)
+			const error = validateCSV(contactsRows, validContactsHeaders, validContactsRow)
+			if(error){
+				res.status(statusCodes.genericError).send({error: error.message}).end();
+				return;
+			}
 
 			fs.writeFileSync('data/contacts.json', JSON.stringify(contactsRows), {encoding: 'utf8'});
 			fs.unlinkSync(contactsFile.path);   // remove temp file
@@ -31,19 +35,22 @@ const uploadCSVs = async (req: Request, res: Response): Promise<void> => {
 			csv.parseFile(listingsFile.path, {headers: true}).on('data', (data) => {
 				listingsRows.push(data)
 			}).on('end', () => {
+				const error = validateCSV(listingsRows, validContactsHeaders, validContactsRow)
+				if(error){
+					res.status(statusCodes.genericError).send({error: error.message}).end();
+					return;
+				}
+
 				const avgPrice = averagePricePerSellerType(listingsRows)
 				const distByMake = distributionByMake(listingsRows)
 				fs.writeFileSync('data/averagePricePerSellerType.json', JSON.stringify(avgPrice), {encoding: 'utf8'});
 				fs.writeFileSync('data/distributionByMake.json', JSON.stringify(distByMake), {encoding: 'utf8'});
 				fs.unlinkSync(listingsFile.path);   // remove temp file
-				// const errors = validateCSV(listingsRows, validContactsHeaders, validContactsRow)
+
+				res.status(statusCodes.success).send({content: 'upload successful'});
 			})
 		})
-
 		
-
-		
-		res.status(statusCodes.success).send({content: 'upload successful'});
 	} catch (err){
 		res.status(statusCodes.serverError).send({error: err.toString()});
 	}
