@@ -3,11 +3,13 @@ import express from 'express';
 import cors from 'cors';
 import { json, urlencoded } from 'body-parser';
 import morgan from 'morgan';
+import path from 'path';
 import { config } from './config';
 import { Server } from 'http';
 import { filesRouter } from './routers/files/files.router';
 import { statisticsRouter } from './routers/statistics/statistics.router';
 export const app = express();
+const pathToFrontendAssets = path.join(__dirname, '/../../client/build');
 
 // Middleware
 app.disable('x-powered-by');
@@ -16,6 +18,14 @@ app.use(json());
 app.use(morgan('dev'));
 app.use(json());
 app.use(urlencoded({ extended: true }));
+app.use(express.static(pathToFrontendAssets))
+
+// Frontend
+app.get('/', function(req, res) {
+	const pathToIndex = path.join(__dirname, pathToFrontendAssets, 'index.html')
+	res.sendFile(pathToIndex)
+	// res.send({message: 'ok'})
+})
 
 // API
 app.use('/statistics', statisticsRouter)

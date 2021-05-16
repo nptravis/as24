@@ -7,8 +7,9 @@
     "test": "jest --watch",
     "dev": "concurrently \"yarn compile\" \"yarn watch\"",
     "compile": "tsc -b -w",
+    "build": "tsc -b",
     "watch": "nodemon build/start.js",
-    "start": "node build/start.js"
+    "start": "yarn build && node build/start.js"
   },
   "repository": {
     "type": "git",
