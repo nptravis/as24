@@ -1,0 +1,37 @@
+{
+  "name": "as24-server",
+  "version": "1.0.0",
+  "description": "backend for as24 take home challenge",
+  "main": "build/start.js",
+  "scripts": {
+    "test": "test",
+    "dev": "concurrently \"yarn compile\" \"yarn watch\"",
+    "compile": "tsc -b -w",
+    "watch": "nodemon build/start.js",
+    "start": "node build/start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nptravis/as24.git"
+  },
+  "author": "nic travis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nptravis/as24/issues"
+  },
+  "homepage": "https://github.com/nptravis/as24#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.10",
+    "@types/express": "^4.17.11",
+    "@types/morgan": "^1.9.2",
+    "concurrently": "^6.1.0",
+    "nodemon": "^2.0.7",
+    "typescript": "^4.2.4"
+  }
+}
