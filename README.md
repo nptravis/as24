@@ -1,6 +1,7 @@
 # Take home task for AS24
 
 ## How to Run Locally
+* `git clone git@github.com:nptravis/as24.git`
 * go the the server directory of this project `as24/server`
 * run this command `yarn start`
 * visit `http://localhost:3000` in a browser
