@@ -3,6 +3,7 @@ import numeral from 'numeral';
 import './App.css';
 import { getAveragePricePerSellerType, getDistributionByMake } from './api/statistics';
 import { uploadCSVs } from './api/files';
+import { sortByField } from './utils/sortingFunctions';
 
 function App() {
   const [averagePriceStats, setAveragePriceStats] = useState<AveragePricePerSellerType[]>([]);
@@ -24,11 +25,11 @@ function App() {
     const distResp = responses[1];
 
     if(avgResp.status === 200){
-      setAveragePriceStats(avgResp.data.content)
+      setAveragePriceStats(avgResp.data.content.sort(sortByField<AveragePricePerSellerType>('average_price')))
     }
 
     if(avgResp.status === 200){
-      setdistByMakeStats(distResp.data.content)
+      setdistByMakeStats(distResp.data.content.sort(sortByField<DistributionByMake>('distribution')))
     }
   }
 
