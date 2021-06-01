@@ -9,5 +9,4 @@ export const initalizeDirectories = () => {
     if (!fs.existsSync('data')){
         fs.mkdirSync('data');
     }
-
 }
