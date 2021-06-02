@@ -14,8 +14,8 @@ export async function processFile<T>(params: ProcessParams): Promise<Error | T[]
 	const rows: T[] = [];
 	let error: Error|null = null;
 
-	const stream = parseFile<T, T>(location, { headers: true })
-		.validate((data: unknown): boolean => validate(data))
+	const stream = parseFile<T, T>(location, options)
+		.validate(validate)
 		.on('error', err => error = err)
 		.on('data', (row: T) => rows.push(row))
 		.on('data-invalid', row => console.error(`Invalid row: ${JSON.stringify(row)}`));
